@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "982230669868",
+    "project_id": "finalyearcollegeapp",
+    "storage_bucket": "finalyearcollegeapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:982230669868:android:dfdacbd848f102ba4c4f89",
+        "android_client_info": {
+          "package_name": "com.example.nri_campus_dairy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "982230669868-tnptmerrk5l5j7gqvde02r83ptc2o2jm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB00ThEXdE50vUV7hod5Xe6HsHeo_xLnPc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "982230669868-tnptmerrk5l5j7gqvde02r83ptc2o2jm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
