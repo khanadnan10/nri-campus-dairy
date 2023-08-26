@@ -81,11 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const Text(
                 'NRI \nCampus Diary',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  
-                  fontSize: 50,
-                  fontWeight: FontWeight.bold
-                ),
+                style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
               ),
               // SvgPicture.asset(
               //   'assets/ic_instagram.svg',
@@ -97,6 +93,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               TextFieldInput(
                 hintText: 'Enter your email',
+                prefixIcon: const Icon(
+                  Icons.email,
+                ),
                 textInputType: TextInputType.emailAddress,
                 textEditingController: _emailController,
               ),
@@ -105,6 +104,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               TextFieldInput(
                 hintText: 'Enter your password',
+                 prefixIcon: const Icon(
+                  Icons.password,
+                ),
                 textInputType: TextInputType.text,
                 textEditingController: _passwordController,
                 isPass: true,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nri_campus_dairy/utils/colors.dart';
 import 'package:nri_campus_dairy/utils/global_variable.dart';
 

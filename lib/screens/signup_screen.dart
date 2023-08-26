@@ -1,6 +1,5 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nri_campus_dairy/resources/auth_methods.dart';
 import 'package:nri_campus_dairy/responsive/mobile_screen_layout.dart';
@@ -36,11 +35,13 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void signUpUser() async {
     // set loading to true
+
+    // signup user using our authmethodds
+
     setState(() {
       _isLoading = true;
     });
 
-    // signup user using our authmethodds
     String res = await AuthMethods().signUpUser(
         email: _emailController.text,
         password: _passwordController.text,
@@ -48,6 +49,7 @@ class _SignupScreenState extends State<SignupScreen> {
         bio: _bioController.text,
         file: _image!);
     // if string returned is sucess, user has been created
+
     if (res == "success") {
       setState(() {
         _isLoading = false;
@@ -77,6 +79,7 @@ class _SignupScreenState extends State<SignupScreen> {
   selectImage() async {
     Uint8List im = await pickImage(ImageSource.gallery);
     // set state because we need to display the image we selected on the circle avatar
+
     setState(() {
       _image = im;
     });
@@ -88,15 +91,16 @@ class _SignupScreenState extends State<SignupScreen> {
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Container(
+          height: MediaQuery.of(context).size.height,
           padding: const EdgeInsets.symmetric(horizontal: 32),
-          width: double.infinity,
+          width: MediaQuery.of(context).size.width,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Flexible(
-                flex: 2,
-                child: Container(),
-              ),
+              // Flexible(
+              //   flex: 2,
+              //   child: Container(),
+              // ),
               // const Text(
               //   'NRI \nCampus Diary',
               //   style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
@@ -119,9 +123,9 @@ class _SignupScreenState extends State<SignupScreen> {
                         )
                       : const CircleAvatar(
                           radius: 64,
-                          backgroundColor: Colors.blue,
+                          backgroundColor: Colors.grey,
                           child: Icon(
-                            Icons.emoji_emotions_outlined,
+                            Icons.person_2_rounded,
                             size: 55.0,
                             color: Colors.white,
                           ),
@@ -129,9 +133,18 @@ class _SignupScreenState extends State<SignupScreen> {
                   Positioned(
                     bottom: -10,
                     left: 80,
-                    child: IconButton(
-                      onPressed: selectImage,
-                      icon: const Icon(Icons.camera_alt, size: 30.0,),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: mobileBackgroundColor,
+                          borderRadius: BorderRadius.circular(50.0),
+                          border: Border.all(style: BorderStyle.none)),
+                      child: IconButton(
+                        onPressed: selectImage,
+                        icon: const Icon(
+                          Icons.camera_alt,
+                          size: 25.0,
+                        ),
+                      ),
                     ),
                   )
                 ],
@@ -141,6 +154,9 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               TextFieldInput(
                 hintText: 'Username',
+                prefixIcon: const Icon(
+                  Icons.person,
+                ),
                 textInputType: TextInputType.text,
                 textEditingController: _usernameController,
               ),
@@ -149,6 +165,9 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               TextFieldInput(
                 hintText: 'Email',
+                prefixIcon: const Icon(
+                  Icons.email,
+                ),
                 textInputType: TextInputType.emailAddress,
                 textEditingController: _emailController,
               ),
@@ -157,6 +176,9 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               TextFieldInput(
                 hintText: 'Password',
+                prefixIcon: const Icon(
+                  Icons.password,
+                ),
                 textInputType: TextInputType.text,
                 textEditingController: _passwordController,
                 isPass: true,
@@ -166,6 +188,9 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               TextFieldInput(
                 hintText: 'Bio',
+                prefixIcon: const Icon(
+                  Icons.pending,
+                ),
                 textInputType: TextInputType.text,
                 textEditingController: _bioController,
               ),
@@ -173,16 +198,34 @@ class _SignupScreenState extends State<SignupScreen> {
                 height: 24,
               ),
               InkWell(
-                onTap: signUpUser,
+                onTap: () {
+                  if (_image == null) {
+                    FocusScope.of(context).unfocus();
+                    showSnackBar(context,
+                        'Choose a profile picture to complete your signup. 📸');
+                    print('image is not found');
+                  } else if (_emailController.text.isEmpty ||
+                      _passwordController.text.isEmpty ||
+                      _usernameController.text.isEmpty ||
+                      _bioController.text.isEmpty) {
+                    FocusScope.of(context).unfocus();
+                    print('details is not found');
+
+                    showSnackBar(context,
+                        '🛑 Hold on! Looks like you missed some fields.');
+                  } else {
+                    signUpUser();
+                  }
+                },
                 child: Container(
                   width: double.infinity,
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(vertical: 12),
-                  decoration: const ShapeDecoration(
-                    shape: RoundedRectangleBorder(
+                  decoration: ShapeDecoration(
+                    shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(4)),
                     ),
-                    color: blueColor,
+                    color: _isLoading ? secondaryColor : blueColor,
                   ),
                   child: !_isLoading
                       ? const Text(
@@ -196,6 +239,11 @@ class _SignupScreenState extends State<SignupScreen> {
               const SizedBox(
                 height: 12,
               ),
+              const Text(
+                "🚨 All fields are mandatory.\n Please fill them out. Thank you!",
+                style: TextStyle(color: secondaryColor, fontSize: 12.0),
+                textAlign: TextAlign.center,
+              ),
               Flexible(
                 flex: 2,
                 child: Container(),
@@ -207,6 +255,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: const Text(
                       'Already have an account?',
+                      style: TextStyle(
+                        color: secondaryColor,
+                      ),
                     ),
                   ),
                   GestureDetector(

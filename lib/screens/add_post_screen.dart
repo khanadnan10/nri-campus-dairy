@@ -170,14 +170,17 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         userProvider.getUser.photoUrl,
                       ),
                     ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      child: TextField(
-                        controller: _descriptionController,
-                        decoration: const InputDecoration(
-                            hintText: "Write a caption...",
-                            border: InputBorder.none),
-                        maxLines: 8,
+                    const SizedBox(width: 5,),
+                    Expanded(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        child: TextField(
+                          controller: _descriptionController,
+                          decoration: const InputDecoration(
+                              hintText: "Write a caption...",
+                              border: InputBorder.none),
+                          maxLines: 8,
+                        ),
                       ),
                     ),
                     SizedBox(

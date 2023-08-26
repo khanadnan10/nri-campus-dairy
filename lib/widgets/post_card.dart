@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nri_campus_dairy/models/user.dart' as model;
@@ -171,10 +172,10 @@ class _PostCardState extends State<PostCard> {
               alignment: Alignment.center,
               children: [
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.35,
+                  height: MediaQuery.of(context).size.height * 0.40,
                   width: double.infinity,
-                  child: Image.network(
-                    widget.snap['postUrl'].toString(),
+                  child: CachedNetworkImage(
+                    imageUrl: widget.snap['postUrl'].toString(),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -235,11 +236,12 @@ class _PostCardState extends State<PostCard> {
                   ),
                 ),
               ),
-              IconButton(
-                  icon: const Icon(
-                    Icons.send,
-                  ),
-                  onPressed: () {}),
+              // TODO: Add share button
+              // IconButton(
+              //     icon: const Icon(
+              //       Icons.send,
+              //     ),
+              //     onPressed: () {}),
               Expanded(
                   child: Align(
                 alignment: Alignment.bottomRight,

@@ -4,13 +4,16 @@ class TextFieldInput extends StatelessWidget {
   final TextEditingController textEditingController;
   final bool isPass;
   final String hintText;
+  final Icon? prefixIcon;
   final TextInputType textInputType;
   const TextFieldInput({
     Key? key,
     required this.textEditingController,
     this.isPass = false,
+
     required this.hintText,
     required this.textInputType,
+    this.prefixIcon,
   }) : super(key: key);
 
   @override
@@ -20,8 +23,10 @@ class TextFieldInput extends StatelessWidget {
     );
 
     return TextField(
+      
       controller: textEditingController,
       decoration: InputDecoration(
+        prefixIcon: prefixIcon,
         hintText: hintText,
         border: inputBorder,
         focusedBorder: inputBorder,

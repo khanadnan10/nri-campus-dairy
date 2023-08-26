@@ -27,7 +27,7 @@ class AuthMethods {
     required String bio,
     required Uint8List file,
   }) async {
-    String res = "Some error Occurred";
+    String res = "Uh-oh! 😕 An error has popped up.";
     try {
       if (email.isNotEmpty ||
           password.isNotEmpty ||
@@ -61,11 +61,12 @@ class AuthMethods {
 
         res = "success";
       } else {
-        res = "Please enter all the fields";
+        res = "Complete all fields for signup. Thanks!";
       }
     } on FirebaseAuthException catch (err) {
       return err.message.toString();
     }
+    print(res.toString());
     return res;
   }
 
@@ -84,10 +85,20 @@ class AuthMethods {
         );
         res = "success";
       } else {
-        res = "Please enter all the fields";
+        res = "🙅‍♂️ Oops! Please double-check your inputs and try again.";
       }
     } on FirebaseAuthException catch (err) {
-      return err.message!;
+      switch (err.code.toString()) {
+        case 'invalid-email': 
+          res = 'Oops! The email you entered doesn\'t seem to be valid.';
+          break;
+        case 'unknown':
+          res = ' Uh-oh! It looks like something\'s not quite right.';
+          break;
+        default:
+      }
+      print(err.toString());
+      // return err.message!;
     }
     return res;
   }

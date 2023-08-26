@@ -69,6 +69,20 @@ class _CommentsScreenState extends State<CommentsScreen> {
               child: CircularProgressIndicator(),
             );
           }
+          if (!snapshot.hasData) {
+            return const Center(
+              child: Text('🌟 Be the first to share your thoughts! \nYour comment could spark a great conversation. ✨'),
+            );
+          }
+          if (snapshot.data!.docs.isEmpty) {
+            return const Center(
+              child: Text(
+                '🌟 Be the first to share your thoughts!',
+                style: TextStyle(color: secondaryColor),
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
 
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
@@ -97,7 +111,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   child: TextField(
                     controller: commentEditingController,
                     decoration: InputDecoration(
-                      hintText: 'Comment as ${user.username}',
+                      hintText: 'Comment as ${user.username} ...',
                       border: InputBorder.none,
                     ),
                   ),

@@ -27,7 +27,7 @@ class _FeedScreenState extends State<FeedScreen> {
               backgroundColor: mobileBackgroundColor,
               centerTitle: false,
               automaticallyImplyLeading: false,
-              title: Text('NRI Campus Diary'),
+              title: const Text('Home', style: TextStyle(fontWeight: FontWeight.bold),),
               // SvgPicture.asset(
               //   'assets/ic_instagram.svg',
               //   color: primaryColor,
@@ -54,12 +54,15 @@ class _FeedScreenState extends State<FeedScreen> {
           }
 
           return snapshot.data!.docs.isEmpty
-              ?  const Center(
-                  child: Text(
-                    'Add friends and post to see 😋',
-                    style: TextStyle(color: Colors.white),
+              ?  Container(
+                color: Colors.white,
+                child: const Center(
+                    child: Text(
+                      'Add friends and post to see 😋',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
-                )
+              )
               : ListView.builder(
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (ctx, index) => Container(
