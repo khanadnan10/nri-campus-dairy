@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -41,6 +42,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     'username',
                     isGreaterThanOrEqualTo: searchController.text,
                   )
+                  .orderBy('username')
                   .get(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -86,6 +88,11 @@ class _SearchScreenState extends State<SearchScreen> {
                   .orderBy('datePublished')
                   .get(),
               builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
                 if (!snapshot.hasData) {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -93,10 +100,10 @@ class _SearchScreenState extends State<SearchScreen> {
                 }
 
                 return MasonryGridView.count(
-                  crossAxisCount: 3,
+                  crossAxisCount: 2,
                   itemCount: (snapshot.data! as dynamic).docs.length,
-                  itemBuilder: (context, index) => Image.network(
-                    (snapshot.data! as dynamic).docs[index]['postUrl'],
+                  itemBuilder: (context, index) => CachedNetworkImage(
+                    imageUrl: (snapshot.data! as dynamic).docs[index]['postUrl'],
                     fit: BoxFit.cover,
                   ),
                   mainAxisSpacing: 8.0,

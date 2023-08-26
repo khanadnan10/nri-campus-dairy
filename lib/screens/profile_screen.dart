@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:nri_campus_dairy/screens/login_screen.dart';
 import 'package:nri_campus_dairy/utils/colors.dart';
 import 'package:nri_campus_dairy/utils/utils.dart';
 import 'package:nri_campus_dairy/widgets/follow_button.dart';
+import 'package:nri_campus_dairy/widgets/post_card.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String uid;
@@ -17,6 +19,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+
   var userData = {};
   int postLen = 0;
   int followers = 0;
@@ -231,9 +234,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             (snapshot.data! as dynamic).docs[index];
 
                         return SizedBox(
-                          child: Image(
-                            image: NetworkImage(snap['postUrl']),
-                            fit: BoxFit.cover,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => PostCard(
+                                    snap: snap.data(),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: CachedNetworkImage(
+                              imageUrl: snap['postUrl'],
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         );
                       },

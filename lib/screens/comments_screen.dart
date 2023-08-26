@@ -17,14 +17,14 @@ class CommentsScreen extends StatefulWidget {
 }
 
 class _CommentsScreenState extends State<CommentsScreen> {
-  final TextEditingController commentEditingController =
+  final TextEditingController _commentEditingController =
       TextEditingController();
 
   void postComment(String uid, String name, String profilePic) async {
     try {
       String res = await FireStoreMethods().postComment(
         widget.postId,
-        commentEditingController.text,
+        _commentEditingController.text,
         uid,
         name,
         profilePic,
@@ -34,7 +34,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
         if (context.mounted) showSnackBar(context, res);
       }
       setState(() {
-        commentEditingController.text = "";
+        _commentEditingController.text = "";
       });
     } catch (err) {
       showSnackBar(
@@ -71,7 +71,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
           }
           if (!snapshot.hasData) {
             return const Center(
-              child: Text('🌟 Be the first to share your thoughts! \nYour comment could spark a great conversation. ✨'),
+              child: Text(
+                  '🌟 Be the first to share your thoughts! \nYour comment could spark a great conversation. ✨'),
             );
           }
           if (snapshot.data!.docs.isEmpty) {
@@ -109,9 +110,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 16, right: 8),
                   child: TextField(
-                    controller: commentEditingController,
+                    controller: _commentEditingController,
                     decoration: InputDecoration(
-                      hintText: 'Comment as ${user.username} ...',
+                      hintText: 'Comment as ${user.username}',
                       border: InputBorder.none,
                     ),
                   ),
@@ -124,11 +125,14 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   user.photoUrl,
                 ),
                 child: Container(
+                  decoration: BoxDecoration(
+                      color: blueColor,
+                      borderRadius: BorderRadius.circular(50.0)),
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                   child: const Text(
-                    'Post',
-                    style: TextStyle(color: Colors.blue),
+                    ' Post ',
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               )

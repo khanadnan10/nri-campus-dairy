@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nri_campus_dairy/providers/user_provider.dart';
 import 'package:nri_campus_dairy/resources/firestore_methods.dart';
+import 'package:nri_campus_dairy/responsive/mobile_screen_layout.dart';
+import 'package:nri_campus_dairy/responsive/responsive_layout.dart';
+import 'package:nri_campus_dairy/responsive/web_screen_layout.dart';
+import 'package:nri_campus_dairy/screens/feed_screen.dart';
 import 'package:nri_campus_dairy/utils/colors.dart';
 import 'package:nri_campus_dairy/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -33,9 +37,14 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 onPressed: () async {
                   Navigator.pop(context);
                   Uint8List file = await pickImage(ImageSource.camera);
-                  setState(() {
-                    _file = file;
-                  });
+                  if (file != null) {
+                    setState(() {
+                      _file = file;
+                    });
+                  } else {
+                    showSnackBar(
+                        context, 'You haven\'t picked any of image yet.');
+                  }
                 }),
             SimpleDialogOption(
                 padding: const EdgeInsets.all(20),
@@ -83,6 +92,14 @@ class _AddPostScreenState extends State<AddPostScreen> {
             context,
             'Posted!',
           );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (_) => const ResponsiveLayout(
+                      mobileScreenLayout: MobileScreenLayout(),
+                      webScreenLayout: WebScreenLayout(),
+                    )),
+          );
         }
         clearImage();
       } else {
@@ -122,6 +139,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
             child: IconButton(
               icon: const Icon(
                 Icons.upload,
+                size: 50.0,
               ),
               onPressed: () => _selectImage(context),
             ),
@@ -170,7 +188,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         userProvider.getUser.photoUrl,
                       ),
                     ),
-                    const SizedBox(width: 5,),
+                    const SizedBox(
+                      width: 5,
+                    ),
                     Expanded(
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.3,

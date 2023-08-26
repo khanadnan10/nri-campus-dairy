@@ -77,7 +77,7 @@ class FireStoreMethods {
         });
         res = 'success';
       } else {
-        res = "Please enter text";
+        res = "Share your thoughts with a few words!";
       }
     } catch (err) {
       res = err.toString();
