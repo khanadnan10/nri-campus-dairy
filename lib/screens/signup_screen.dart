@@ -85,6 +85,8 @@ class _SignupScreenState extends State<SignupScreen> {
     });
   }
 
+  bool hidePass = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -176,12 +178,21 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               TextFieldInput(
                 hintText: 'Password',
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        hidePass = !hidePass;
+                      });
+                    },
+                    icon: hidePass
+                        ? const Icon(Icons.visibility)
+                        : const Icon(Icons.visibility_off)),
                 prefixIcon: const Icon(
                   Icons.password,
                 ),
                 textInputType: TextInputType.text,
                 textEditingController: _passwordController,
-                isPass: true,
+                isPass: hidePass,
               ),
               const SizedBox(
                 height: 24,
@@ -203,13 +214,11 @@ class _SignupScreenState extends State<SignupScreen> {
                     FocusScope.of(context).unfocus();
                     showSnackBar(context,
                         'Choose a profile picture to complete your signup. 📸');
-                    print('image is not found');
                   } else if (_emailController.text.isEmpty ||
                       _passwordController.text.isEmpty ||
                       _usernameController.text.isEmpty ||
                       _bioController.text.isEmpty) {
                     FocusScope.of(context).unfocus();
-                    print('details is not found');
 
                     showSnackBar(context,
                         '🛑 Hold on! Looks like you missed some fields.');

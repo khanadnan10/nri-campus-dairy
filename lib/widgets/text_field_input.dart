@@ -5,6 +5,7 @@ class TextFieldInput extends StatelessWidget {
   final bool isPass;
   final String hintText;
   final Icon? prefixIcon;
+  final Widget? suffixIcon;
   final TextInputType textInputType;
   const TextFieldInput({
     Key? key,
@@ -14,6 +15,7 @@ class TextFieldInput extends StatelessWidget {
     required this.hintText,
     required this.textInputType,
     this.prefixIcon,
+    this.suffixIcon,
   }) : super(key: key);
 
   @override
@@ -26,6 +28,7 @@ class TextFieldInput extends StatelessWidget {
       
       controller: textEditingController,
       decoration: InputDecoration(
+        suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
         hintText: hintText,
         border: inputBorder,

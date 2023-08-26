@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nri_campus_dairy/resources/auth_methods.dart';
 import 'package:nri_campus_dairy/responsive/mobile_screen_layout.dart';
 import 'package:nri_campus_dairy/responsive/responsive_layout.dart';
@@ -104,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               TextFieldInput(
                 hintText: 'Enter your password',
-                 prefixIcon: const Icon(
+                prefixIcon: const Icon(
                   Icons.password,
                 ),
                 textInputType: TextInputType.text,
@@ -149,6 +148,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: const Text(
                       'Dont have an account?',
+                      style: TextStyle(
+                        color: secondaryColor,
+                      ),
                     ),
                   ),
                   GestureDetector(
