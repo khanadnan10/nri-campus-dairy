@@ -136,12 +136,41 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
     return _file == null
         ? Center(
-            child: IconButton(
-              icon: const Icon(
-                Icons.upload,
-                size: 50.0,
-              ),
-              onPressed: () => _selectImage(context),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Text(
+                    "Your memories, your moments, your voice.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: secondaryColor,
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => _selectImage(context),
+                  child: Container(
+                    height: 50.0,
+                    width: 50.0,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(100.0),
+                    ),
+                    child: const Icon(
+                      Icons.upload,
+                      
+                      size: 30.0,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 30.0,
+                ),
+              ],
             ),
           )
         : Scaffold(

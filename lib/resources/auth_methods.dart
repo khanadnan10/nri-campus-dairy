@@ -89,11 +89,14 @@ class AuthMethods {
       }
     } on FirebaseAuthException catch (err) {
       switch (err.code.toString()) {
-        case 'invalid-email': 
+        case 'invalid-email':
           res = 'Oops! The email you entered doesn\'t seem to be valid.';
           break;
         case 'unknown':
           res = ' Uh-oh! It looks like something\'s not quite right.';
+          break;
+        case 'wrong-password':
+          res = 'The password is invalid';
           break;
         default:
       }
@@ -105,5 +108,21 @@ class AuthMethods {
 
   Future<void> signOut() async {
     await _auth.signOut();
+  }
+
+  // User check for signup -----------------------------------------------------
+  Future<String> signupCheck({required int passCode}) async {
+    String res = 'Invalid Code :(';
+
+    QuerySnapshot snap = await _firestore.collection('passCode').get();
+
+    for (DocumentSnapshot documentSnapshot in snap.docs) {
+      int key = documentSnapshot.get('code');
+      if (passCode == key) {
+        res = 'success';
+        break;
+      }
+    }
+    return res;
   }
 }

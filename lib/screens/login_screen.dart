@@ -3,6 +3,7 @@ import 'package:nri_campus_dairy/resources/auth_methods.dart';
 import 'package:nri_campus_dairy/responsive/mobile_screen_layout.dart';
 import 'package:nri_campus_dairy/responsive/responsive_layout.dart';
 import 'package:nri_campus_dairy/responsive/web_screen_layout.dart';
+import 'package:nri_campus_dairy/screens/passcode_screen.dart';
 import 'package:nri_campus_dairy/screens/signup_screen.dart';
 import 'package:nri_campus_dairy/utils/colors.dart';
 import 'package:nri_campus_dairy/utils/global_variable.dart';
@@ -156,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   GestureDetector(
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const SignupScreen(),
+                        builder: (context) => const PasscodeScreen(),
                       ),
                     ),
                     child: Container(

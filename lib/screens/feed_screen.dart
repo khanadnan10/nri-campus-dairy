@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:nri_campus_dairy/resources/auth_methods.dart';
+import 'package:nri_campus_dairy/models/user.dart' as model;
+import 'package:nri_campus_dairy/providers/user_provider.dart';
 import 'package:nri_campus_dairy/utils/colors.dart';
 import 'package:nri_campus_dairy/utils/global_variable.dart';
 import 'package:nri_campus_dairy/widgets/post_card.dart';
+import 'package:provider/provider.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class _FeedScreenState extends State<FeedScreen> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final model.User user = Provider.of<UserProvider>(context).getUser;
 
     return Scaffold(
       backgroundColor:
@@ -27,7 +29,10 @@ class _FeedScreenState extends State<FeedScreen> {
               backgroundColor: mobileBackgroundColor,
               centerTitle: false,
               automaticallyImplyLeading: false,
-              title: const Text('Home', style: TextStyle(fontWeight: FontWeight.bold),),
+              title: const Text(
+                'Home',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               // SvgPicture.asset(
               //   'assets/ic_instagram.svg',
               //   color: primaryColor,
@@ -44,26 +49,32 @@ class _FeedScreenState extends State<FeedScreen> {
               // ],
             ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection("posts")
-.orderBy("datePublished", descending: true).snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection("posts")
+            .orderBy("datePublished", descending: true)
+            .snapshots(),
         builder: (context,
             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
+          } else if (snapshot.connectionState == ConnectionState.none) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
 
           return snapshot.data!.docs.isEmpty
-              ?  Container(
-                color: Colors.white,
-                child: const Center(
+              ? Container(
+                  color: Colors.white,
+                  child: const Center(
                     child: Text(
                       'Add friends and post to see 😋',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
-              )
+                )
               : ListView.builder(
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (ctx, index) => Container(

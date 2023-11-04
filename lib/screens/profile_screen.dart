@@ -19,7 +19,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-
   var userData = {};
   int postLen = 0;
   int followers = 0;
@@ -30,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    getData();
+    if (mounted) getData();
   }
 
   getData() async {
@@ -95,7 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             backgroundImage: NetworkImage(
                               userData['photoUrl'],
                             ),
-                            radius: 40,
+                            radius: 50,
                           ),
                           Expanded(
                             flex: 1,
@@ -191,6 +190,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           userData['username'],
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
                           ),
                         ),
                       ),
@@ -201,6 +201,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         child: Text(
                           userData['bio'],
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 214, 214, 214)),
                         ),
                       ),
                     ],
@@ -212,16 +214,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       .collection('posts')
                       .where('uid', isEqualTo: widget.uid)
                       .get(),
-                  builder: (context, snapshot) {
+                  builder: (context,
+                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                          snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
                         child: CircularProgressIndicator(),
                       );
                     }
+                    if (snapshot.data!.docs.isEmpty) {
+                      return const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: 50.0,
+                          ),
+                          Text(
+                            'Share moments, thoughts, and experiences.',
+                            style: TextStyle(color: secondaryColor),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                            height: 30.0,
+                          ),
+                          Text(
+                            "Click the 'Add Post' button to begin your journey! 📸✨",
+                            style: TextStyle(color: secondaryColor),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      );
+                    }
 
                     return GridView.builder(
                       shrinkWrap: true,
-                      itemCount: (snapshot.data! as dynamic).docs.length,
+                      itemCount: snapshot.data!.docs.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
@@ -230,26 +258,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         childAspectRatio: 1,
                       ),
                       itemBuilder: (context, index) {
-                        DocumentSnapshot snap =
-                            (snapshot.data! as dynamic).docs[index];
-
+                        DocumentSnapshot snap = snapshot.data!.docs[index];
                         return SizedBox(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => PostCard(
-                                    snap: snap.data(),
+                          child: Builder(builder: (context) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => PostCard(
+                                      snap: snap.data(),
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            child: CachedNetworkImage(
-                              imageUrl: snap['postUrl'],
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                                );
+                              },
+                              child: CachedNetworkImage(
+                                imageUrl: snap['postUrl'],
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          }),
                         );
                       },
                     );

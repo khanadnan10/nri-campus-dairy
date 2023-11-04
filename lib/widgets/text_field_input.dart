@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
 class TextFieldInput extends StatelessWidget {
@@ -6,16 +7,17 @@ class TextFieldInput extends StatelessWidget {
   final String hintText;
   final Icon? prefixIcon;
   final Widget? suffixIcon;
+  final int? maxLength;
   final TextInputType textInputType;
   const TextFieldInput({
     Key? key,
     required this.textEditingController,
     this.isPass = false,
-
     required this.hintText,
-    required this.textInputType,
     this.prefixIcon,
     this.suffixIcon,
+    this.maxLength,
+    required this.textInputType,
   }) : super(key: key);
 
   @override
@@ -25,7 +27,6 @@ class TextFieldInput extends StatelessWidget {
     );
 
     return TextField(
-      
       controller: textEditingController,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
@@ -37,6 +38,7 @@ class TextFieldInput extends StatelessWidget {
         filled: true,
         contentPadding: const EdgeInsets.all(8),
       ),
+      maxLength: maxLength,
       keyboardType: textInputType,
       obscureText: isPass,
     );

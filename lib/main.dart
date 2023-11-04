@@ -67,7 +67,7 @@ class ConnectAppWithBackendAndStart extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         }
-        
+
         if (snapshot.connectionState == ConnectionState.active) {
           // Checking if the snapshot has any data or not
           if (snapshot.hasData) {
@@ -78,7 +78,8 @@ class ConnectAppWithBackendAndStart extends StatelessWidget {
             );
           } else if (snapshot.hasError) {
             return Center(
-              child: Text('${snapshot.error} \n An error occurred while processing. Please try again later.'),
+              child: Text(
+                  '${snapshot.error} \n An error occurred while processing. Please try again later.'),
             );
           }
         }

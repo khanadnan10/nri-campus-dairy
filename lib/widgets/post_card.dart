@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nri_campus_dairy/models/user.dart' as model;
 import 'package:nri_campus_dairy/providers/user_provider.dart';
@@ -13,7 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class PostCard extends StatefulWidget {
-  final  snap;
+  final snap;
   const PostCard({
     Key? key,
     required this.snap,
@@ -71,13 +72,19 @@ class _PostCardState extends State<PostCard> {
         child: Container(
           // boundary needed for web
           decoration: BoxDecoration(
+            // borderRadius: BorderRadius.circular(16.0),
             border: Border.all(
-              color: width > webScreenSize ? secondaryColor : mobileBackgroundColor,
+              color: width > webScreenSize
+                  ? secondaryColor
+                  : mobileBackgroundColor,
             ),
             color: mobileBackgroundColor,
           ),
           padding: const EdgeInsets.symmetric(
             vertical: 10,
+          ),
+          margin: const EdgeInsets.only(
+            bottom: 5,
           ),
           child: Column(
             children: [
@@ -90,8 +97,8 @@ class _PostCardState extends State<PostCard> {
                 child: Row(
                   children: <Widget>[
                     CircleAvatar(
-                      radius: 16,
-                      backgroundImage: NetworkImage(
+                      radius: 18,
+                      backgroundImage: CachedNetworkImageProvider(
                         widget.snap['profImage'].toString(),
                       ),
                     ),
@@ -132,10 +139,10 @@ class _PostCardState extends State<PostCard> {
                                             .map(
                                               (e) => InkWell(
                                                   child: Container(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                            vertical: 12,
-                                                            horizontal: 16),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        vertical: 12,
+                                                        horizontal: 16),
                                                     child: Text(e),
                                                   ),
                                                   onTap: () {
@@ -173,12 +180,26 @@ class _PostCardState extends State<PostCard> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.40,
-                      width: double.infinity,
-                      child: CachedNetworkImage(
-                        imageUrl: widget.snap['postUrl'].toString(),
-                        fit: BoxFit.cover,
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.50,
+                          width: MediaQuery.of(context).size.height,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          child: CachedNetworkImage(
+                            imageUrl: widget.snap['postUrl'].toString(),
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ),
                     AnimatedOpacity(
@@ -195,7 +216,6 @@ class _PostCardState extends State<PostCard> {
                           });
                         },
                         child: const Icon(
-                          
                           Icons.favorite,
                           color: Colors.white,
                           size: 100,
@@ -206,52 +226,85 @@ class _PostCardState extends State<PostCard> {
                 ),
               ),
               // LIKE, COMMENT SECTION OF THE POST
-              Row(
-                children: <Widget>[
-                  LikeAnimation(
-                    isAnimating: widget.snap['likes'].contains(user.uid),
-                    smallLike: true,
-                    child: IconButton(
-                      icon: widget.snap['likes'].contains(user.uid)
-                          ? const Icon(
-                              Icons.favorite,
-                              color: Colors.red,
-                            )
-                          : const Icon(
-                              Icons.favorite_border,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  children: <Widget>[
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        LikeAnimation(
+                          isAnimating: widget.snap['likes'].contains(user.uid),
+                          smallLike: true,
+                          child: IconButton(
+                            icon: widget.snap['likes'].contains(user.uid)
+                                ? const Icon(
+                                    CupertinoIcons.heart_fill,
+                                    color: Colors.red,
+                                  )
+                                : const Icon(
+                                    CupertinoIcons.heart,
+                                  ),
+                            onPressed: () => FireStoreMethods().likePost(
+                              widget.snap['postId'].toString(),
+                              user.uid,
+                              widget.snap['likes'],
                             ),
-                      onPressed: () => FireStoreMethods().likePost(
-                        widget.snap['postId'].toString(),
-                        user.uid,
-                        widget.snap['likes'],
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.comment_outlined,
-                    ),
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => CommentsScreen(
-                          postId: widget.snap['postId'].toString(),
+                          ),
                         ),
+                        Text(
+                          '${widget.snap['likes'].length}',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        )
+                      ],
+                    ),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(
+                              CupertinoIcons.chat_bubble,
+                            ),
+                            onPressed: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => CommentsScreen(
+                                  postId: widget.snap['postId'].toString(),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Text(
+                            '$commentLen',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: secondaryColor,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  // TODO: Add share button
-                  // IconButton(
-                  //     icon: const Icon(
-                  //       Icons.send,
-                  //     ),
-                  //     onPressed: () {}),
-                  // Expanded(
-                  //     child: Align(
-                  //   alignment: Alignment.bottomRight,
-                  //   child: IconButton(
-                  //       icon: const Icon(Icons.bookmark_border), onPressed: () {}),
-                  // ))
-                ],
+                    // TODO: Add share button
+                    // IconButton(
+                    //     icon: const Icon(
+                    //       Icons.send,
+                    //     ),
+                    //     onPressed: () {}),
+                    // Expanded(
+                    //     child: Align(
+                    //   alignment: Alignment.bottomRight,
+                    //   child: IconButton(
+                    //       icon: const Icon(Icons.bookmark_border), onPressed: () {}),
+                    // ))
+                    Text(
+                      DateFormat.yMMMMd()
+                          .format(widget.snap['datePublished'].toDate()),
+                      style: const TextStyle(
+                        color: secondaryColor,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               //DESCRIPTION AND NUMBER OF COMMENTS
               Container(
@@ -260,15 +313,15 @@ class _PostCardState extends State<PostCard> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    DefaultTextStyle(
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleSmall!
-                            .copyWith(fontWeight: FontWeight.w800),
-                        child: Text(
-                          '${widget.snap['likes'].length} likes',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        )),
+                    // DefaultTextStyle(
+                    //     style: Theme.of(context)
+                    //         .textTheme
+                    //         .titleSmall!
+                    //         .copyWith(fontWeight: FontWeight.w800),
+                    //     child: Text(
+                    //       '${widget.snap['likes'].length} likes',
+                    //       style: Theme.of(context).textTheme.bodyMedium,
+                    //     )),
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.only(
@@ -291,36 +344,34 @@ class _PostCardState extends State<PostCard> {
                         ),
                       ),
                     ),
-                    InkWell(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Text(
-                          'View all $commentLen comments',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: secondaryColor,
-                          ),
-                        ),
-                      ),
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => CommentsScreen(
-                            postId: widget.snap['postId'].toString(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Text(
-                        DateFormat.yMMMd()
-                            .format(widget.snap['datePublished'].toDate()),
-                        style: const TextStyle(
-                          color: secondaryColor,
-                          fontSize: 14
-                        ),
-                      ),
-                    ),
+                    // InkWell(
+                    //   child: Container(
+                    //     padding: const EdgeInsets.symmetric(vertical: 4),
+                    //     child: Text(
+                    //       'View all $commentLen comments',
+                    //       style: const TextStyle(
+                    //         fontSize: 14,
+                    //         color: secondaryColor,
+                    //       ),
+                    //     ),
+                    //   ),
+                    //   onTap: () => Navigator.of(context).push(
+                    //     MaterialPageRoute(
+                    //       builder: (context) => CommentsScreen(
+                    //         postId: widget.snap['postId'].toString(),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // Container(
+                    //   padding: const EdgeInsets.symmetric(vertical: 4),
+                    //   child: Text(
+                    //     DateFormat.yMMMd()
+                    //         .format(widget.snap['datePublished'].toDate()),
+                    //     style: const TextStyle(
+                    //         color: secondaryColor, fontSize: 14),
+                    //   ),
+                    // ),
                   ],
                 ),
               )
