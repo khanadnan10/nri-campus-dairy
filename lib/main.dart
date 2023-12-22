@@ -9,6 +9,7 @@ import 'package:nri_campus_dairy/responsive/web_screen_layout.dart';
 import 'package:nri_campus_dairy/screens/login_screen.dart';
 import 'package:nri_campus_dairy/utils/colors.dart';
 import 'package:provider/provider.dart';
+import 'package:device_preview/device_preview.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +27,12 @@ void main() async {
   } else {
     await Firebase.initializeApp();
   }
-  runApp(const MyApp());
+  runApp(
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => const MyApp(), // Wrap your app
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -41,19 +47,22 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        // useInheritedMediaQuery: true,
+        locale: DevicePreview.locale(context),
+        builder: DevicePreview.appBuilder,
         debugShowCheckedModeBanner: false,
-        title: 'NRI Campus Dairy',
+        title: 'NRI Campus Diary',
         theme: ThemeData.dark().copyWith(
           scaffoldBackgroundColor: mobileBackgroundColor,
         ),
-        home: const ConnectAppWithBackendAndStart(),
+        home: const InitializingPersistenanceState(),
       ),
     );
   }
 }
 
-class ConnectAppWithBackendAndStart extends StatelessWidget {
-  const ConnectAppWithBackendAndStart({
+class InitializingPersistenanceState extends StatelessWidget {
+  const InitializingPersistenanceState({
     Key? key,
   }) : super(key: key);
 
@@ -69,9 +78,7 @@ class ConnectAppWithBackendAndStart extends StatelessWidget {
         }
 
         if (snapshot.connectionState == ConnectionState.active) {
-          // Checking if the snapshot has any data or not
           if (snapshot.hasData) {
-            // if snapshot has data which means user is logged in then we check the width of screen and accordingly display the screen layout
             return const ResponsiveLayout(
               mobileScreenLayout: MobileScreenLayout(),
               webScreenLayout: WebScreenLayout(),
@@ -83,7 +90,6 @@ class ConnectAppWithBackendAndStart extends StatelessWidget {
             );
           }
         }
-        // means connection to future hasnt been made yet
         return const LoginScreen();
       },
     );
